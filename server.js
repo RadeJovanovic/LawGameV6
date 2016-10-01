@@ -40,8 +40,14 @@ var sceneSchema = new Schema({
 //  authority: String,
 //  video: Boolean,
   resource: String,
-  thumbnail: String
-//  time: Number
+  thumbnail: String,
+//  answertime: Number
+    startTime: {
+        minutes: Number,
+        seconds: Number},
+    endTime: {
+        minutes: Number,
+        seconds: Number}
 });
 
 var Scene = mongoose.model('Scene', sceneSchema);

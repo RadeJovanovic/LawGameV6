@@ -1,0 +1,33 @@
+<div id="imageBackground">
+    <img ng-src="http://img.youtube.com/vi/{{sceneInfo.resource}}/0.jpg">
+</div>
+<div id="question">
+    <div id="spacing"></div>
+    <div id="questionhint">
+        This is the question
+    </div>
+    <div id="spacing"></div>
+    <div id="authority">
+        Type authority here
+    </div>
+    <div id="spacing"></div>
+    <div id="answer">
+        <label><input type="radio" ng-model="answer" value="correct">Correct answer for story {{sceneInfo.storynumber}} question {{sceneInfo.scenenumber}}</label><br/>
+        <label><input type="radio" ng-model="answer" value="incorrect">Incorrect answer</label><br/>
+    </div>
+    <div><tt>color = {{answer | json}}</tt><br/></div>
+</div>
+<div id="nextButton">
+    <button ng-click="nextScene()">Next</button>
+<!--    <a ui-sref="game({scenenumber:nextScene})" ui-sref-opts="{reload: true}">Next</a>-->
+</div>
+
+<!--
+<div id="imageBackground">
+    This is my background: {{sceneInfo.thumbnail}}
+    <img ng-src="http://proprofs-cdn.s3.amazonaws.com/images/QM/user_images/1826446/1455528360.png">
+</div>
+<div id="question">
+    This is my question
+</div>
+-->

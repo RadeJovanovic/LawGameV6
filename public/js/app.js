@@ -30,16 +30,15 @@ angular.module('lawGame', ['ui.router', 'youtube-embed'])
             
             })
                         
-             .state('game', {
+            .state('game', {
+                abstract: true,
                 url:'/game/:storynumber/:scenenumber',
                 templateUrl: 'views/game.html',
                 controller: 'gameController',
                 resolve: {
                     sceneinfo: ['$stateParams', 'sceneService', function($stateParams, sceneService){
                         var story = $stateParams.storynumber;
-                        var scene = $stateParams.scenenumber;
-                        console.log(story,scene)
-                                
+                        var scene = $stateParams.scenenumber;                
                         return sceneService.resolveOne(story, scene)
                             .success(function(data){
                                 console.log('This is the data coming from the game resolve:')
@@ -54,6 +53,16 @@ angular.module('lawGame', ['ui.router', 'youtube-embed'])
                 }
             })
         
+            .state('game.media', {
+                url:'',
+                templateUrl: 'views/game.media.html',
+            })
+        
+            .state('game.question', { 
+                url:'/question',
+                templateUrl: 'views/game.qhaf.html', //question, hint, answer, feedback
+            })
+                
             .state('death', {
                 url:'/death',
                 templateUrl:'views/death.html',
@@ -158,32 +167,27 @@ angular.module('lawGame', ['ui.router', 'youtube-embed'])
 
 //  View setup
     var sceneInfo = sceneinfo.data;
-    $scope.videoID = sceneInfo.resource; // videoID gets passed to the directive     
+    $scope.sceneInfo = sceneInfo;
+    $scope.nextScene = sceneInfo.scenenumber+1;
+    $scope.videoID = sceneInfo.resource; // videoID gets passed to the directive
+    var startInSeconds = sceneInfo.startTime.minutes*60+sceneInfo.startTime.seconds;
+    var endInSeconds = sceneInfo.endTime.minutes*60+sceneInfo.endTime.seconds;
+    
                         
-//  Video playback
-    var playing = true;
-    console.log('The video is playing?: '+ playing)
-    $scope.playerVars = {controls: 0, autoplay: 1, start:7, end:10};
-
-//    $scope.load = function(){
-//        setTimeout(timeout, 5000)
-//    }
-//   angular.element(document).ready(function () {
-//        setTimeout(timeout, 5000)
-//    });      
-                        
-    function timeout(){
-        playing = false;
-        console.log('The timer has expired')
-        $scope.$broadcast('youtube.player.ended')
-    }
-                        
+//  Changing gameplay mode
+    $scope.playerVars = {controls: 0, autoplay: 1, start:startInSeconds, end:endInSeconds};
     $scope.$on('youtube.player.ended', function ($event, player) {
-        $state.go('game', {storynumber: 1, scenenumber: 2})
+        $state.go('game.question', {storynumber: sceneInfo.storynumber, scenenumber: sceneInfo.scenenumber})
     });                
     
 //  Gameplay
     $scope.isQuestion = true;
+    $scope.isAnswer = true;
+    $scope.answer = {};
+    $scope.nextScene = function(){
+        appropriateNextScene = $scope.sceneInfo.scenenumber+1;
+        $state.go('game.media', {scenenumber: appropriateNextScene})
+    }
     }])
 
 .controller('editorController', ['$scope', 'sceneService',
